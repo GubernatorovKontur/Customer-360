@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Единая карточка клиента | Customer 360° - инновационное решение для управления клиентскими данными">
+    <title>Единая карточка клиента | Customer 360°</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #4a4a4a;
+            --accent-color: #2a2a2a;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-light: #6a6a6a;
+            --bg-dark: #ffffff;
+            --bg-light: #f8f8f8;
+            --bg-gray: #e8e8e8;
+            --bg-gradient: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 400;
+            font-size: 16px;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-content {
+            text-align: center;
+        }
+
+        .preloader-logo {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .preloader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--bg-gray);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--bg-gradient);
+        }
+
+        /* Particles - only on desktop */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            display: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 25s infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.2;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-menu a:hover::after,
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 60px);
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 40px;
+                gap: 20px;
+                transition: left 0.3s ease;
+                box-shadow: 0 4px 20px var(--shadow);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            background: var(--bg-light);
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            animation: fadeInUp 1.2s ease-out;
+            font-weight: 500;
+        }
+
+        .header .tagline {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            color: var(--text-light);
+            margin-bottom: 50px;
+            animation: fadeInUp 1.4s ease-out;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .header-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1.6s ease-out;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            background: #000000;
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 120px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            max-width: 200px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            color: var(--primary-color);
+        }
+
+        /* Cards with Glassmorphism */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 50px;
+            margin-bottom: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            line-height: 1.3;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .card h4 {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            color: var(--accent-color);
+            margin: 30px 0 20px 0;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .card p {
+            font-size: clamp(1.05rem, 2vw, 1.15rem);
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Lists */
+        ul, ol {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 15px 0;
+            padding-left: 40px;
+            position: relative;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: clamp(1.05rem, 2vw, 1.15rem);
+            line-height: 1.8;
+        }
+
+        li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        li:hover {
+            color: var(--text-primary);
+            padding-left: 45px;
+        }
+
+        li:hover::before {
+            transform: translateX(8px);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: #ffffff;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--bg-gray);
+            color: var(--text-primary);
+        }
+
+        .risk-status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .risk-low { background: #6a6a6a; }
+        .risk-medium { background: #4a4a4a; }
+        .risk-high { background: #1a1a1a; }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0 30px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: row !important;
+            }
+
+            .timeline-content {
+                max-width: calc(100% - 120px);
+                margin-left: auto;
+            }
+
+            .timeline-marker {
+                margin: 0 30px 0 0;
+            }
+        }
+
+        /* Highlighted text */
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            margin: 100px 0;
+            opacity: 0.2;
+        }
+
+        /* Results Cards */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .result-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            color: var(--primary-color);
+        }
+
+        .result-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 100px 40px;
+            background: var(--bg-gray);
+            border-top: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-color);
+            color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--bg-gray);
+            z-index: 1001;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 60px 30px;
+            }
+
+            .section {
+                margin-bottom: 80px;
+            }
+
+            .card {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .section {
+                margin-bottom: 60px;
+            }
+
+            .header-cta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Numbered list */
+        ol li {
+            counter-increment: item;
+        }
+
+        ol {
+            counter-reset: item;
+        }
+
+        ol li::before {
+            content: counter(item) '.';
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">Customer 360°</div>
+            <div class="preloader-spinner"></div>
+        </div>
+    </div>
+
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+    
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">Customer 360°</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#problem" class="nav-link">Проблема</a></li>
+                <li><a href="#goal" class="nav-link">Цель</a></li>
+                <li><a href="#architecture" class="nav-link">Архитектура</a></li>
+                <li><a href="#plan" class="nav-link">План</a></li>
+                <li><a href="#principles" class="nav-link">Принципы</a></li>
+                <li><a href="#results" class="nav-link">Результаты</a></li>
+                <li><a href="#risks" class="nav-link">Риски</a></li>
+                <li><a href="#next-steps" class="nav-link">Next Steps</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>Единая карточка клиента</h1>
+            <p class="subtitle">Customer 360°</p>
+            <p class="tagline">360° взгляд на клиента. Всё, что нужно менеджеру — в одном окне.</p>
+            <div class="header-cta">
+                <a href="#architecture" class="btn btn-primary">Посмотреть решение</a>
+                <a href="#plan" class="btn btn-secondary">План реализации</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Problem Section -->
+        <section class="section" id="problem">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                Проблема
+            </h2>
+            <div class="card">
+                <p style="font-size: clamp(1.1rem, 2vw, 1.3rem); margin-bottom: 30px; color: var(--text-secondary); line-height: 1.8;">
+                    Менеджеры тратят чрезмерное время на поиск разрозненной информации о клиентах, что приводит к:
+                </p>
+                <ul>
+                    <li>Пропуску актуальных контактов (особенно для онлайн-продаж)</li>
+                    <li>Использованию устаревших данных из сервиса контактов</li>
+                    <li>Отсутствию полного контекста взаимодействия с клиентом</li>
+                    <li>Низкой эффективности коммуникаций</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Goal Section -->
+        <section class="section" id="goal">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Цель проекта
+            </h2>
+            <div class="card">
+                <p style="font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8;">
+                    Создать единый инструмент, который по <strong>ИНН</strong> предоставляет структурированную, актуальную и полную информацию о клиенте для повышения эффективности менеджеров.
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Architecture Section -->
+        <section class="section" id="architecture">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Архитектура решения
+            </h2>
+            
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle class="icon" cx="9" cy="7" r="4"/>
+                        <path class="icon" d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    1. Блок "Люди и контакты" <span class="gradient-text">(MVP - высший приоритет)</span>
+                </h3>
+                <p style="margin-bottom: 20px;"><strong>Источники:</strong> НВС (звонки), КП (комментарии), Биллинг</p>
+                <h4>Данные:</h4>
+                <ul>
+                    <li>Актуальные номера телефонов (с датами последнего контакта)</li>
+                    <li>ФИО контактных лиц</li>
+                    <li>Должности и обязанности (даже если должность не указана)</li>
+                    <li>Уровень влияния на решение</li>
+                    <li>Предпочтения по коммуникации</li>
+                    <li>С кем общались по каждому продукту</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline class="icon" points="14 2 14 8 20 8"/>
+                        <line class="icon" x1="16" y1="13" x2="8" y2="13"/>
+                        <line class="icon" x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline class="icon" points="10 9 9 9 8 9"/>
+                    </svg>
+                    2. Блок "История взаимодействий"
+                </h3>
+                <p style="margin-bottom: 20px;"><strong>Источники:</strong> НВС, КП, ТП, Почта</p>
+                <h4>Данные:</h4>
+                <ul>
+                    <li>Единая хронологическая лента событий</li>
+                    <li>Телефонные звонки (с тегами, резюме ИИ, ссылками на записи)</li>
+                    <li>Комментарии менеджеров</li>
+                    <li>Обращения в техподдержку</li>
+                    <li>Электронная переписка</li>
+                    <li>Встречи и их итоги</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    3. Блок "Продукты и коммерция"
+                </h3>
+                <p style="margin-bottom: 20px;"><strong>Источники:</strong> Биллинг, КП, CRM</p>
+                <h4>Данные:</h4>
+                <ul>
+                    <li>История предложений (КП) и их статусы</li>
+                    <li>Выставленные счета (оплаченные/неоплаченные)</li>
+                    <li>Купленные продукты (текущие и исторические)</li>
+                    <li>Горячие заявки</li>
+                    <li>Текущие задачи и следующие шаги</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M3 3v18h18"/>
+                        <path class="icon" d="M18 7l-5-4-5 4v6l5 4 5-4V7z"/>
+                    </svg>
+                    4. Блок "Аналитика и контекст"
+                </h3>
+                <p style="margin-bottom: 20px;"><strong>Источники:</strong> Фокус/СПАРК, продукты Контура</p>
+                <h4>Данные:</h4>
+                <ul>
+                    <li>Информация об организации (ОКВЭД, размер, фин. показатели)</li>
+                    <li>Использование продуктов (активность, логины, ошибки)</li>
+                    <li>Метрики здоровья клиента (Health Score)</li>
+                    <li>Тональность коммуникаций (анализ НВС)</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Plan Section with Timeline -->
+        <section class="section" id="plan">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <polyline class="icon" points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                План реализации
+            </h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3>Этап 1: MVP "Наколеночное решение" <span class="gradient-text">(1-2 месяца)</span></h3>
+                            <h4>Цель:</h4>
+                            <p style="margin-bottom: 20px; color: var(--text-secondary);">Проверить гипотезу полезности и собрать метрики</p>
+                            
+                            <h4>Технологии:</h4>
+                            <ul>
+                                <li>Инвойс8/Диффаи для интерфейса</li>
+                                <li>Python-скрипты для обработки данных</li>
+                                <li>Простая база данных (или даже Excel/Google Sheets)</li>
+                            </ul>
+
+                            <h4>Функционал:</h4>
+                            <ul>
+                                <li>Поиск по ИНН → вывод актуальных контактов</li>
+                                <li>Краткая история взаимодействий</li>
+                                <li>Список продуктов и статусов счетов</li>
+                            </ul>
+
+                            <h4>Метрики успеха:</h4>
+                            <ul>
+                                <li>Количество обращений к сервису</li>
+                                <li>Экономия времени менеджеров</li>
+                                <li>Обратная связь от пилотной группы (1-2 СЦ)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">1</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3>Этап 2: Автоматизация и расширение <span class="gradient-text">(3-6 месяцев)</span></h3>
+                            <h4>Цель:</h4>
+                            <p style="margin-bottom: 20px; color: var(--text-secondary);">Сделать решение стабильным и полезным</p>
+                            
+                            <h4>Улучшения:</h4>
+                            <ul>
+                                <li>Автоматическая ежедневная выгрузка и обработка данных</li>
+                                <li>Интеграция с большеим количеством источников</li>
+                                <li>Система тегов и фильтров</li>
+                                <li>Более глубокий анализ с помощью ИИ</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">2</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3>Этап 3: Интеграция и масштабирование <span class="gradient-text">(6-12 месяцев)</span></h3>
+                            <h4>Цель:</h4>
+                            <p style="margin-bottom: 20px; color: var(--text-secondary);">Сделать решение корпоративным стандартом</p>
+                            
+                            <h4>Направления:</h4>
+                            <ul>
+                                <li>Интеграция с КП и другими CRM</li>
+                                <li>Создание личного кабинета менеджера</li>
+                                <li>Рекомендательная система на основе данных</li>
+                                <li>Автоматические оповещения и напоминания</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">3</div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Principles Section -->
+        <section class="section" id="principles">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Ключевые технологические принципы
+            </h2>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    1. Двухуровневая обработка ИИ
+                </h3>
+                <ul>
+                    <li><strong>Уровень 1:</strong> Поиск по ключевым словам и правилам</li>
+                    <li><strong>Уровень 2:</strong> Глубокий анализ только релевантных фрагментов</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <polyline class="icon" points="3.27 6.96 12 12.01 20.73 6.96"/>
+                        <line class="icon" x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                    2. Принципы работы с данными
+                </h3>
+                <ul>
+                    <li>Всегда актуальные контакты (приоритет последних коммуникаций)</li>
+                    <li>Связка "контакт - продукт - контекст"</li>
+                    <li>Автоматическое определение зон ответственности</li>
+                    <li>Расчет метрик здоровья клиента</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <polyline class="icon" points="7.5 4.21 12 6.81 16.5 4.21"/>
+                        <polyline class="icon" points="7.5 19.79 7.5 14.6 3 12"/>
+                        <polyline class="icon" points="21 12 16.5 14.6 16.5 19.79"/>
+                        <polyline class="icon" points="3.27 6.96 12 12.01 20.73 6.96"/>
+                        <line class="icon" x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                    3. Архитектура хранения
+                </h3>
+                <ul>
+                    <li>Кэширование обработанных ИНН</li>
+                    <li>Возможность принудительного обновления</li>
+                    <li>Логирование всех запросов для анализа использования</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Results Section -->
+        <section class="section" id="results">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline class="icon" points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Ожидаемые результаты
+            </h2>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <svg class="result-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle class="icon" cx="9" cy="7" r="4"/>
+                        <path class="icon" d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <h3>Для менеджеров</h3>
+                    <ul style="text-align: left;">
+                        <li>Сокращение времени на поиск информации с часов до минут</li>
+                        <li>Повышение конверсии за счет работы с актуальными контактами</li>
+                        <li>Улучшение качества подготовки к звонкам</li>
+                    </ul>
+                </div>
+
+                <div class="result-card">
+                    <svg class="result-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    <h3>Для бизнеса</h3>
+                    <ul style="text-align: left;">
+                        <li>Рост LTV клиентов</li>
+                        <li>Снижение оттока менеджеров</li>
+                        <li>Улучшение кросс-продаж</li>
+                        <li>Data-driven управление продажами</li>
+                    </ul>
+                </div>
+
+                <div class="result-card">
+                    <svg class="result-icon" viewBox="0 0 24 24">
+                        <path class="icon" d="M3 3v18h18"/>
+                        <path class="icon" d="M18 7l-5-4-5 4v6l5 4 5-4V7z"/>
+                    </svg>
+                    <h3>Для продукта</h3>
+                    <ul style="text-align: left;">
+                        <li>Понимание реальных потребностей клиентов</li>
+                        <li>Выявление точек роста продуктов</li>
+                        <li>Улучшение процессов онбординга и поддержки</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Risks Section -->
+        <section class="section" id="risks">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <path class="icon" d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line class="icon" x1="12" y1="9" x2="12" y2="13"/>
+                    <line class="icon" x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Риски и их mitigation
+            </h2>
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Риск</th>
+                                <th>Способы снижения</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="risk-status risk-medium"></span>Низкое принятие менеджерами</td>
+                                <td>Пилот с мотивированной группой, сбор обратной связи</td>
+                            </tr>
+                            <tr>
+                                <td><span class="risk-status risk-medium"></span>Технические ограничения интеграции</td>
+                                <td>Постепенное подключение источников, "наколеночные" решения</td>
+                            </tr>
+                            <tr>
+                                <td><span class="risk-status risk-low"></span>Качество данных</td>
+                                <td>Внедрение валидации, приоритет надежных источников</td>
+                            </tr>
+                            <tr>
+                                <td><span class="risk-status risk-low"></span>Ресурсы на разработку</td>
+                                <td>Фокус на MVP, использование low-code платформ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Next Steps Section -->
+        <section class="section" id="next-steps">
+            <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24">
+                    <polyline class="icon" points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Next Steps <span class="gradient-text">(ближайшие 2 недели)</span>
+            </h2>
+            <div class="card">
+                <ol style="padding-left: 0;">
+                    <li><strong>Завершить эксперимент с ФИО и должностями</strong> из сентябрьских звонков</li>
+                    <li><strong>Определить правила для "актуальных контактов"</strong> (обсуждение с Ангелиной)</li>
+                    <li><strong>Создать прототип интерфейса</strong> на Инвойс8/Диффаи</li>
+                    <li><strong>Выбрать пилотную группу</strong> (1-2 СЦ)</li>
+                    <li><strong>Настроить сбор базовых метрик</strong> использования</li>
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>
+                Этот проект превращает разрозненные данные в стратегический актив, дающий Контуру реальное конкурентное преимущество за счет глубокого понимания клиентов и их потребностей.
+            </p>
+            <div class="footer-links">
+                <a href="#problem">О проекте</a>
+                <a href="#plan">План</a>
+                <a href="#results">Результаты</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <div class="back-to-top" id="backToTop">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"/>
+        </svg>
+    </div>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 1000);
+        });
+
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Scroll progress indicator
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        }
+
+        // Navbar scroll effect
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Active nav link
+        function updateActiveNavLink() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Intersection Observer for animations
+        function initScrollAnimations() {
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // Back to top button
+        function initBackToTop() {
+            const backToTop = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Mobile menu toggle
+        function initMobileMenu() {
+            const navToggle = document.getElementById('navToggle');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createParticles();
+            initScrollAnimations();
+            initBackToTop();
+            initMobileMenu();
+        });
+
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateNavbar();
+            updateActiveNavLink();
+        });
+
+        updateScrollProgress();
+        updateNavbar();
+    </script>
+</body>
+</html>
